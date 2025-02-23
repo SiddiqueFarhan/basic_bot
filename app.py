@@ -1,30 +1,43 @@
 from google import genai
 import streamlit as st
-from google.genai import types
 import os
-key = os.getenv("GEMINI_API_KEY") 
 
-sys_instruct = "You are a SARCASTIC assistant. Give responses in SARCASTIC manner."
-
-client = genai.Client(api_key=key)
+key = os.getenv("GENIMI_KEY")
+client = genai.Client(api_key= key)
 
 @st.cache_resource
 def load_chat():
-    return client.chats.create(model="gemini-2.0-flash",
-                                config=types.GenerateContentConfig(
-                                max_output_tokens=500,
-                                temperature=1.0,
-                                system_instruction=sys_instruct
-                            ))
+    chat = client.chats.create(model="gemini-2.0-flash")
+    return chat
+
+
+chat = load_chat()
+
+
+
+
+
+
+
 
 def chatbot(query):
-  chat = load_chat()
-  response = chat.send_message(query)
-  return response.text
 
-st.title("Demo chatbot")
-user_input = st.text_area("Write your query")
-if st.button("Ask!"):
-  if user_input:
-    response = chatbot(user_input)
-    st.write(response)
+
+
+
+    
+    response = chat.send_message(query)
+    return response
+
+    # print(response.text)
+    # for message in chat._curated_history:
+    #     print(f'role - ', message.role, end=": ")
+    #     print(message.parts[0].text)
+
+
+user_query = st.text_area("Enter Your Query")
+
+if st.button("ASK!"):
+    if user_query:
+        response =  chatbot(user_query)
+        st.write(response.text)
